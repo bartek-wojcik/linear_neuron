@@ -1,6 +1,7 @@
 import random
 from dotenv import load_dotenv
 import os
+from tabulate import tabulate
 import matplotlib.pyplot as plt
 
 load_dotenv()
@@ -58,19 +59,28 @@ def train(epochs, data, weights, learning_rate):
         delta_difference.append(abs(difference))
     return weights
 
+def result_table(weights):
+    headers = [ "w" + str(x) for x in range (1,len(weights) + 1) ]
+    row = []
+    for weight in weights:
+        row.append(round(weight, 3))
+    rows = [row]
+    return tabulate( rows, headers, tablefmt="latex")
+
 
 data = read_data('patterns5.txt')
 epochs = int(os.getenv("EPOCHS"))
 learning_rate = float(os.getenv("LEARNING_RATE"))
 inter = lambda x: int(x)
-input_weights = [ inter(x) for x in (os.getenv("INPUT_WEIGHS")).split(",")]
-weights = init_weights(data['patterns'], input_weights)
+input_weights_range = [ inter(x) for x in (os.getenv("INPUT_WEIGHS")).split(",")]
+weights = init_weights(data['patterns'], input_weights_range)
 
 result_weights = train(epochs, data, weights, learning_rate)
 
 result = compute_output(data['inputs'][0], result_weights)
 print(result)
 print(result_weights)
+print(result_table(result_weights))
 plt.plot(delta_difference)
 plt.xlabel('Epochs', fontsize=18)
 plt.ylabel('Delta', fontsize=16)
