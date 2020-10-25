@@ -55,7 +55,7 @@ def train(epochs, data, weights, learning_rate):
     for i in range(epochs):
         train_inputs(data, weights, learning_rate)
         difference = compute_output(data['inputs'][0], weights) - data['real_outputs'][0]
-        delta_difference.append(difference)
+        delta_difference.append(abs(difference))
     return weights
 
 
