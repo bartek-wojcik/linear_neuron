@@ -28,8 +28,8 @@ def read_data(filename):
     }
 
 
-def init_weights(patterns):
-    return [random.uniform(-1, 1) for _ in range(patterns)]
+def init_weights(patterns, input_weights):
+    return [random.uniform(input_weights[0], input_weights[1]) for _ in range(patterns)]
 
 
 def compute_output(inputs, weights):
@@ -60,9 +60,11 @@ def train(epochs, data, weights, learning_rate):
 
 
 data = read_data('patterns5.txt')
-weights = init_weights(data['patterns'])
 epochs = int(os.getenv("EPOCHS"))
 learning_rate = float(os.getenv("LEARNING_RATE"))
+inter = lambda x: int(x)
+input_weights = [ inter(x) for x in (os.getenv("INPUT_WEIGHS")).split(",")]
+weights = init_weights(data['patterns'], input_weights)
 
 result_weights = train(epochs, data, weights, learning_rate)
 
