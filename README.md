@@ -28,3 +28,10 @@ In root directory
 ## RUN
 In console:
 > python neuron.py
+
+## CONFIGURATION
+to change parameters of the program look into .env file. Input formats:
+- EPOCHS = {integer}
+- LEARNING_RATE = {float}
+- INPUT_WEIGHTS = {float,float}
+- FILE = {string_file_path}

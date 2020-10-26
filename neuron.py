@@ -71,7 +71,7 @@ def result_table(weights):
     return tabulate( rows, headers, tablefmt="latex")
 
 
-data = read_data('patterns5.txt')
+data = read_data(os.getenv("FILE"))
 epochs = int(os.getenv("EPOCHS"))
 learning_rate = float(os.getenv("LEARNING_RATE"))
 inter = lambda x: int(x)
