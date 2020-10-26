@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 import os
 from tabulate import tabulate
 import matplotlib.pyplot as plt
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
+
 
 load_dotenv()
 
@@ -76,11 +79,14 @@ input_weights_range = [ inter(x) for x in (os.getenv("INPUT_WEIGHS")).split(",")
 weights = init_weights(data['patterns'], input_weights_range)
 
 result_weights = train(epochs, data, weights, learning_rate)
+computed_outputs = [compute_output(pattern, result_weights) for pattern in data['inputs']]
 
-result = compute_output(data['inputs'][0], result_weights)
-print(result)
+results = [ f"Result for {index+1}. pattern: " + str(c_output) + f". Diffrence with real is: {abs(c_output - data['real_outputs'][index]) }" for index, c_output in enumerate(computed_outputs)]
+
+print("After training weights given below are used to compute output")
 print(result_weights)
-print(result_table(result_weights))
+pp.pprint(results)
+
 plt.plot(delta_difference)
 plt.xlabel('Epochs', fontsize=18)
 plt.ylabel('Delta', fontsize=16)
