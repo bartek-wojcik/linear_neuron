@@ -1,11 +1,13 @@
 import random
+from math import sqrt
+
 from dotenv import load_dotenv
 import os
 import matplotlib.pyplot as plt
 
 load_dotenv()
 
-delta_difference = []
+errors = []
 
 
 def map_to_floats(array):
@@ -51,19 +53,26 @@ def train_inputs(data, weights, learning_rate):
         update_weights(input, weights, output, real_output, learning_rate)
 
 
+def calculate_rmse(data, weights):
+    rmse = 0
+    for index, input in enumerate(data['inputs']):
+        diff = compute_output(input, weights) - data['real_outputs'][index]
+        rmse += diff * diff
+    return sqrt(rmse / len(data['inputs']))
+
+
 def train(epochs, data, weights, learning_rate):
     for i in range(epochs):
         train_inputs(data, weights, learning_rate)
-        difference = compute_output(data['inputs'][0], weights) - data['real_outputs'][0]
-        delta_difference.append(abs(difference))
+        rmse = calculate_rmse(data, weights)
+        errors.append(rmse)
     return weights
 
 
 data = read_data('patterns5.txt')
 epochs = int(os.getenv("EPOCHS"))
 learning_rate = float(os.getenv("LEARNING_RATE"))
-inter = lambda x: int(x)
-input_weights = [ inter(x) for x in (os.getenv("INPUT_WEIGHS")).split(",")]
+input_weights = [int(x) for x in (os.getenv("INPUT_WEIGHS")).split(",")]
 weights = init_weights(data['patterns'], input_weights)
 
 result_weights = train(epochs, data, weights, learning_rate)
@@ -71,7 +80,7 @@ result_weights = train(epochs, data, weights, learning_rate)
 result = compute_output(data['inputs'][0], result_weights)
 print(result)
 print(result_weights)
-plt.plot(delta_difference)
+plt.plot(errors)
 plt.xlabel('Epochs', fontsize=18)
-plt.ylabel('Delta', fontsize=16)
+plt.ylabel('RMSE', fontsize=16)
 plt.show()
